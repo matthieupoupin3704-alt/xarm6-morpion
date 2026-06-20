@@ -33,7 +33,12 @@ Built as an attractive demonstration for ENSEIRB-MATMECA open days. ~2 700 lines
 | xArm Gripper | End-effector, 86 mm opening |
 | Intel RealSense D435 | RGB 640×480 @ 30 fps + depth, mounted on the wrist (eye-in-hand) |
 | Laser-engraved wood board | CTP 29.7×42 cm (A3), 3×3 grid with ArUco markers on each cell and corner |
-| 3D-printed PLA pawns | 50 mm cubes, unique ArUco marker glued on top face |
+| 3D-printed PLA pawns | 50 mm cubes, unique ArUco marker glued on top face — print sheets in `cad/` |
+
+<p align="center">
+  <img src="assets/InterRS.png" width="450" alt="Intel RealSense D435">
+  <br><em>Intel RealSense D435 — RGB + depth camera, mounted eye-in-hand on the wrist</em>
+</p>
 
 ### ArUco addressing plan (DICT_4X4_50)
 
@@ -50,6 +55,11 @@ Built as an attractive demonstration for ENSEIRB-MATMECA open days. ~2 700 lines
 </p>
 
 <p align="center">
+  <img src="assets/Board_layout.png" width="600" alt="Full ArUco board layout with pawn stocks">
+  <br><em>Complete layout — ArUco IDs, board corners, robot stock (blue, IDs 20–29) and human stock (red, IDs 30–39)</em>
+</p>
+
+<p align="center">
   <img src="assets/board_with_pawns.png" width="400" alt="Board with pawns">
   <br><em>Laser-engraved board with 3D-printed pawns</em>
 </p>
@@ -57,6 +67,11 @@ Built as an attractive demonstration for ENSEIRB-MATMECA open days. ~2 700 lines
 <p align="center">
   <img src="assets/pawn_blue_irl.png" width="300" alt="Blue robot pawn">
   <br><em>Robot pawn (blue border) vs human pawn (red border)</em>
+</p>
+
+<p align="center">
+  <img src="assets/3DCube.png" width="300" alt="3D CAD render of the pawn">
+  <br><em>3D CAD render — 50 mm PLA cube with ArUco marker on top</em>
 </p>
 
 ---
@@ -214,9 +229,43 @@ xarm6-morpion/
 ├── morpion.py          # Main program (~2 700 lines)
 ├── config_robot.json   # Calibration config (not committed)
 ├── assets/             # Photos, diagrams, HUD screenshots
-├── cad/                # Board SVG + pawn STEP file
+├── cad/                # Board SVG + pawn STEP file + ArUco print sheets
+│   ├── Plateau_morpion_2.svg
+│   ├── Morion_pawn.step
+│   ├── aruco_page_bleue.png   # Robot pawns (IDs 20–29, blue border)
+│   └── aruco_page_rouge.png   # Human pawns (IDs 30–39, red border)
 └── docs/               # Project report (PDF) + presentation (PPTX)
 ```
+
+---
+
+## For Future Students
+
+This project is handed off as-is at the end of the 2025–2026 academic year. The code is functional and the robot has been demonstrated successfully. Here is what you need to know to pick it up:
+
+**What works reliably**
+- Full game loop (scan → pick → place → win detection) in normal lighting conditions
+- Simulation mode on any laptop without hardware
+- Calibration wizard — takes ~2 minutes on first run, then persists across sessions
+- HARD mode is genuinely unbeatable (Minimax optimal)
+
+**What still needs work**
+- ArUco detection is sensitive to ambient light and marker angle — if detection rate drops, adjust gamma and CLAHE values in `config_robot.json`
+- The `correction_mecanique_xy` field must be re-measured on each physical setup; do not reuse another team's calibration
+- Human move validation (30-frame threshold) can feel sluggish — tunable in `VisionSystem`
+
+**Suggested next steps** (see [Future Work](#future-work) for detail)
+1. Board homography via corner markers — would eliminate the SCAN calibration step entirely
+2. Replace ArUco with a neural classifier (MobileNet/YOLO) — more robust to occlusion and lighting
+3. Robot vs. robot mode — the `RobotController` architecture already supports two instances
+
+**To get started**
+```bash
+python3 morpion.py          # launches calibration wizard on first run
+python3 morpion.py          # simulation mode if no hardware detected
+```
+
+Contact your supervisors (M. Pierre Melchior, M. Matthieu Chevrié) for access to the xArm6 and camera hardware.
 
 ---
 
