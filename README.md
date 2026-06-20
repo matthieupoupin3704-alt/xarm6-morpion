@@ -245,9 +245,9 @@ This project is handed off as-is at the end of the 2025–2026 academic year. Th
 - HARD mode is genuinely unbeatable (Minimax optimal)
 
 **What still needs work**
-- ArUco detection is sensitive to ambient light and marker angle — if detection rate drops, adjust gamma and CLAHE values in `config_robot.json`
+- ArUco detection is sensitive to ambient light and marker angle: if detection rate drops, adjust gamma and CLAHE values in `config_robot.json`
 - The `correction_mecanique_xy` field must be re-measured on each physical setup; do not reuse another team's calibration
-- Human move validation (30-frame threshold) can feel sluggish — tunable in `VisionSystem`
+- Human move validation (30-frame threshold) can feel sluggish: tunable in `VisionSystem`
 
 **Suggested next steps** (see [Future Work](#future-work) for detail)
 1. Board homography via corner markers — would eliminate the SCAN calibration step entirely
