@@ -13,12 +13,12 @@ Supervisors: M. Pierre Melchior & M. Matthieu Chevrié — EEL8-PROJ1 [BRA]
 
 ## Overview
 
-The robot detects the board state in real time via ArUco markers, computes the best move with a Minimax alpha-beta algorithm, picks a pawn from its stock, and places it precisely on the target cell — entirely without human intervention once the game starts.
+The robot detects the board state in real time via ArUco markers, computes the best move with a Minimax alpha-beta algorithm, picks a pawn from its stock, and places it precisely on the target cell, entirely without human intervention once the game starts.
 
-Built as an attractive demonstration for ENSEIRB-MATMECA open days. ~2 700 lines of Python, single-file architecture.
+Built as an attractive demonstration for ENSEIRB-MATMECA open days. ~2 700 lines of Python, single-file architecture (easier to hand-over and to compile for new users)
 
 - **Vision**: Intel RealSense D435, ArUco markers (DICT_4X4_50), triple detection pipeline
-- **AI**: 3 difficulty levels including unbeatable Minimax alpha-beta
+- **Game Algorithm**: 3 difficulty levels including unbeatable Minimax alpha-beta
 - **Control**: xArm Python SDK over Ethernet TCP/IP, eye-in-hand camera configuration
 - **HUD**: real-time OpenCV overlay showing board state, scores, status
 - **Simulation mode**: fully playable without hardware (mouse clicks replace physical pawns)
@@ -46,7 +46,7 @@ Built as an attractive demonstration for ENSEIRB-MATMECA open days. ~2 700 lines
 
 <p align="center">
   <img src="assets/aruco_diagram.png" width="500" alt="ArUco addressing diagram">
-  <br><em>ArUco ID layout — corners, cells, robot and human pawns</em>
+  <br><em>ArUco ID layout: corners, cells, robot and human pawns</em>
 </p>
 
 <p align="center">
@@ -74,13 +74,13 @@ The entire program runs as a single Python file (`morpion.py`), structured in 5 
 | 4 | `VisionSystem` | Video acquisition + triple ArUco detection pipeline |
 | 5 | `main()` | Main game loop + calibration assistant |
 
-### AI — 3 difficulty levels
+### Game Algorithm: 3 difficulty levels
 
 - **EASY**: 70% random moves, opportunistic win if available
 - **MEDIUM**: heuristic rules (win > block > center > corner > random)
-- **HARD**: Minimax with alpha-beta pruning — unbeatable, strategic move ordering `[4,0,2,6,8,1,3,5,7]`
+- **HARD**: Minimax with alpha-beta pruning: unbeatable, strategic move ordering `[4,0,2,6,8,1,3,5,7]`
 
-### Vision — triple detection pipeline
+### Vision: triple detection pipeline
 
 Each frame attempts ArUco detection in 3 successive passes:
 1. Gamma correction + CLAHE (adaptive contrast)
@@ -109,7 +109,7 @@ Up to 3 retries on grip failure before aborting.
 
 <p align="center">
   <img src="assets/HUD.png" width="500" alt="HUD screenshot">
-  <br><em>HUD overlay — board state, scores, remaining pawns, status</em>
+  <br><em>HUD overlay: board state, scores, remaining pawns, status</em>
 </p>
 
 <p align="center">
@@ -123,7 +123,7 @@ Up to 3 retries on grip failure before aborting.
 ### Requirements
 
 - Python ≥ 3.9
-- Linux or Windows PC (macOS: simulation mode only — `pyrealsense2` not officially supported)
+- Linux or Windows PC (macOS: simulation mode only as `pyrealsense2` is not officially supported)
 - Packages: `opencv-python`, `numpy`, `pyrealsense2`, `xarm-python-sdk`
 
 ```bash
@@ -140,7 +140,7 @@ python3 morpion.py
 
 On first run (no `config_robot.json`), the calibration assistant launches automatically. Choose difficulty when prompted: `1` = Easy, `2` = Medium, `3` = Hard.
 
-**Simulation mode** activates automatically if `pyrealsense2` or the xArm SDK is unavailable — board cells become clickable.
+**Simulation mode** activates automatically if `pyrealsense2` or the xArm SDK is unavailable. Board cells then become clickable.
 
 ### Calibration (first run only, ~2 minutes)
 
@@ -148,7 +148,7 @@ The `wizard_calibration` function guides you through 3 steps:
 
 1. Vision tuning (gamma, CLAHE)
 2. Record SCAN position (global board view) and STOCK position
-3. Automatic calibration: robot moves above ArUco corner 0, you lower the gripper to contact — the program derives board height Z and residual mechanical bias XY
+3. Automatic calibration: robot moves above ArUco corner 0, you lower the gripper to contact. The program derives board height Z and residual mechanical bias XY
 
 Settings are saved to `config_robot.json` and persist across sessions.
 
@@ -166,11 +166,11 @@ All geometric parameters live in `config_robot.json` (auto-generated on first ca
 |-------|-------------|
 | `offset_cam` | `[dx, dy, dz]` mm vector from robot TCP to camera optical center |
 | `correction_mecanique_xy` | Residual mechanical bias in mm, corrects systematic placement drift |
-| `pos_scan` | `[X, Y, Z, roll, pitch, yaw]` — global board overview position |
+| `pos_scan` | `[X, Y, Z, roll, pitch, yaw]`: global board overview position |
 | `pos_stock` | Stock position where robot pawns are stored |
 | `z_jeu` | Board surface height in mm |
 
-> `config_robot.json` is excluded from git (`.gitignore`) — each physical setup requires its own calibration.
+> `config_robot.json` is excluded from git (`.gitignore`). Each physical setup requires its own calibration.
 
 ---
 
@@ -198,9 +198,11 @@ All geometric parameters live in `config_robot.json` (auto-generated on first ca
 
 ## Future Work
 
-- **Board homography** using corner markers (IDs 0–3) via `cv2.findHomography` — would eliminate SCAN position calibration
-- **Robot vs. robot**: two `RobotController` instances alternating — architecture already supports it
-- **Object classification** (MobileNet / YOLO) to replace ArUco markers
+The project is done on our part, but for future students who wish to continue it:
+
+- **Board homography** using corner markers (IDs 0–3) via `cv2.findHomography`. It would eliminate SCAN position calibration
+- **Robot vs. robot**: two `RobotController` instances alternating. Architecture already supports it, but you would have to verifiy if the other available robot in the lab is python-compliant.
+- **Object classification** (MobileNet / YOLO) to replace ArUco markers.
 - **Force control**: collision detection and mass-based pawn sorting
 
 ---
@@ -221,7 +223,7 @@ xarm6-morpion/
 ## Acknowledgements
 
 Thanks to **M. Pierre Melchior** and **M. Matthieu Chevrié** for their guidance throughout the project.  
-Thanks to the ENSEIRB-MATMECA technical staff for access to the xArm6, 3D printer, and laser engraver.  
+Thanks to the ENSEIRB-MATMECA and EIRLAB technical staff for access to the xArm6, 3D printer, and laser engraver.  
 Thanks to previous cohorts whose reports on the xArm6 and RealSense D435 provided the starting point for this work.
 
 ---
