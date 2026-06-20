@@ -2,3 +2,4 @@ __pycache__/
 *.pyc
 config_robot.json
 .DS_Store
+docs/soutenance_robot.pptx
