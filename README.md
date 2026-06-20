@@ -37,7 +37,7 @@ Built as an attractive demonstration for ENSEIRB-MATMECA open days. ~2 700 lines
 
 <p align="center">
   <img src="assets/InterRS.png" width="450" alt="Intel RealSense D435">
-  <br><em>Intel RealSense D435 — RGB + depth camera, mounted eye-in-hand on the wrist</em>
+  <br><em>Intel RealSense D435: RGB + depth camera, mounted eye-in-hand on the wrist</em>
 </p>
 
 ### ArUco addressing plan (DICT_4X4_50)
@@ -56,7 +56,7 @@ Built as an attractive demonstration for ENSEIRB-MATMECA open days. ~2 700 lines
 
 <p align="center">
   <img src="assets/Board_layout.png" width="600" alt="Full ArUco board layout with pawn stocks">
-  <br><em>Complete layout — ArUco IDs, board corners, robot stock (blue, IDs 20–29) and human stock (red, IDs 30–39)</em>
+  <br><em>Complete layout: ArUco IDs, board corners, robot stock (blue, IDs 20–29) and human stock (red, IDs 30–39)</em>
 </p>
 
 <p align="center">
@@ -67,11 +67,6 @@ Built as an attractive demonstration for ENSEIRB-MATMECA open days. ~2 700 lines
 <p align="center">
   <img src="assets/pawn_blue_irl.png" width="300" alt="Blue robot pawn">
   <br><em>Robot pawn (blue border) vs human pawn (red border)</em>
-</p>
-
-<p align="center">
-  <img src="assets/3DCube.png" width="300" alt="3D CAD render of the pawn">
-  <br><em>3D CAD render — 50 mm PLA cube with ArUco marker on top</em>
 </p>
 
 ---
