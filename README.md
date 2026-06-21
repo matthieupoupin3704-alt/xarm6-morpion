@@ -252,7 +252,7 @@ This project is handed off as-is at the end of the 2025–2026 academic year. Th
 **Suggested next steps** (see [Future Work](#future-work) for detail)
 1. Board homography via corner markers: would eliminate the SCAN calibration step entirely
 2. Replace ArUco with a neural classifier (MobileNet/YOLO): more robust to occlusion and lighting
-3. Robot vs. robot mode — the `RobotController` architecture already supports two instances
+3. Robot vs. robot mode: the `RobotController` architecture already supports two instances
 
 **To get started**
 ```bash
