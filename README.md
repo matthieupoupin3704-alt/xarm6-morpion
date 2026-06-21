@@ -241,7 +241,7 @@ This project is handed off as-is at the end of the 2025–2026 academic year. Th
 **What works reliably**
 - Full game loop (scan → pick → place → win detection) in normal lighting conditions
 - Simulation mode on any laptop without hardware
-- Calibration wizard — takes ~2 minutes on first run, then persists across sessions
+- Calibration wizard. Takes ~2 minutes on first run, then persists across sessions
 - HARD mode is genuinely unbeatable (Minimax optimal)
 
 **What still needs work**
@@ -250,8 +250,8 @@ This project is handed off as-is at the end of the 2025–2026 academic year. Th
 - Human move validation (30-frame threshold) can feel sluggish: tunable in `VisionSystem`
 
 **Suggested next steps** (see [Future Work](#future-work) for detail)
-1. Board homography via corner markers — would eliminate the SCAN calibration step entirely
-2. Replace ArUco with a neural classifier (MobileNet/YOLO) — more robust to occlusion and lighting
+1. Board homography via corner markers: would eliminate the SCAN calibration step entirely
+2. Replace ArUco with a neural classifier (MobileNet/YOLO): more robust to occlusion and lighting
 3. Robot vs. robot mode — the `RobotController` architecture already supports two instances
 
 **To get started**
