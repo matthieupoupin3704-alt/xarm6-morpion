@@ -2,8 +2,8 @@
 
 **A UFactory xArm6 robotic arm playing tic-tac-toe against a human, guided by an Intel RealSense D435 depth camera and ArUco fiducial markers.**
 
-Matthieu POUPIN & Lou-Ann MICHAUD — ENSEIRB-MATMECA, Electronics Engineering, 2025–2026  
-Supervisors: M. Pierre Melchior & M. Matthieu Chevrié — EEL8-PROJ1 [BRA]
+Matthieu POUPIN & Lou-Ann MICHAUD, ENSEIRB-MATMECA, Electronics Engineering, 2025–2026  
+Supervisors: M. Pierre Melchior & M. Matthieu Chevrié, EEL8-PROJ1 [BRA]
 
 <p align="center">
   <img src="assets/lab_setup.png" width="600" alt="Lab setup with xArm6 and board">
@@ -33,7 +33,7 @@ Built as an attractive demonstration for ENSEIRB-MATMECA open days. ~2 700 lines
 | xArm Gripper | End-effector, 86 mm opening |
 | Intel RealSense D435 | RGB 640×480 @ 30 fps + depth, mounted on the wrist (eye-in-hand) |
 | Laser-engraved wood board | CTP 29.7×42 cm (A3), 3×3 grid with ArUco markers on each cell and corner |
-| 3D-printed PLA pawns | 50 mm cubes, unique ArUco marker glued on top face — print sheets in `cad/` |
+| 3D-printed PLA pawns | 50 mm cubes, unique ArUco marker glued on top face (print sheets in `cad/`) |
 
 <p align="center">
   <img src="assets/InterRS.png" width="450" alt="Intel RealSense D435">
@@ -78,8 +78,8 @@ The entire program runs as a single Python file (`morpion.py`), structured in 5 
 | Section | Class / Module | Role |
 |---------|---------------|------|
 | 0 | `ConfigManager` | JSON config externalization (`config_robot.json`) |
-| 1 | `MorpionIA` | AI — 3 difficulty levels including Minimax alpha-beta |
-| 2 | `RobotController` | ~900 lines — all high-level robot movements |
+| 1 | `MorpionIA` | AI: 3 difficulty levels including Minimax alpha-beta |
+| 2 | `RobotController` | ~900 lines, all high-level robot movements |
 | 3 | `dessiner_*` | HUD overlay on live camera feed (OpenCV) |
 | 4 | `VisionSystem` | Video acquisition + triple ArUco detection pipeline |
 | 5 | `main()` | Main game loop + calibration assistant |
@@ -241,17 +241,17 @@ This project is handed off as-is at the end of the 2025–2026 academic year. Th
 **What works reliably**
 - Full game loop (scan → pick → place → win detection) in normal lighting conditions
 - Simulation mode on any laptop without hardware
-- Calibration wizard. Takes ~2 minutes on first run, then persists across sessions
+- Calibration wizard: takes ~2 minutes on first run, then persists across sessions
 - HARD mode is genuinely unbeatable (Minimax optimal)
 
 **What still needs work**
 - ArUco detection is sensitive to ambient light and marker angle: if detection rate drops, adjust gamma and CLAHE values in `config_robot.json`
 - The `correction_mecanique_xy` field must be re-measured on each physical setup; do not reuse another team's calibration
-- Human move validation (30-frame threshold) can feel sluggish: tunable in `VisionSystem`
+- Human move validation (30-frame threshold) can feel sluggish, tunable in `VisionSystem`
 
 **Suggested next steps** (see [Future Work](#future-work) for detail)
-1. Board homography via corner markers: would eliminate the SCAN calibration step entirely
-2. Replace ArUco with a neural classifier (MobileNet/YOLO): more robust to occlusion and lighting
+1. Board homography via corner markers (would eliminate the SCAN calibration step entirely)
+2. Replace ArUco with a neural classifier (MobileNet/YOLO), more robust to occlusion and lighting
 3. Robot vs. robot mode: the `RobotController` architecture already supports two instances
 
 **To get started**
@@ -276,8 +276,8 @@ Thanks to previous cohorts whose reports on the xArm6 and RealSense D435 provide
 
 - [xArm Python SDK](https://github.com/xArm-Developer/xArm-Python-SDK)
 - [Intel RealSense SDK 2.0 (librealsense)](https://github.com/IntelRealSense/librealsense)
-- [OpenCV — ArUco Detection](https://docs.opencv.org/4.x/d5/dae/tutorial_aruco_detection.html)
+- [OpenCV: ArUco Detection](https://docs.opencv.org/4.x/d5/dae/tutorial_aruco_detection.html)
 
 ---
 
-*Matthieu POUPIN & Lou-Ann MICHAUD — ENSEIRB-MATMECA, Bordeaux INP, 2025–2026*
+*Matthieu POUPIN & Lou-Ann MICHAUD, ENSEIRB-MATMECA, Bordeaux INP, 2025–2026*
