@@ -51,7 +51,7 @@ Built as an attractive demonstration for ENSEIRB-MATMECA open days. ~2 700 lines
 
 <p align="center">
   <img src="assets/aruco_diagram.png" width="500" alt="ArUco addressing diagram">
-  <br><em>ArUco ID layout: corners, cells, robot and human pawns</em>
+  <br><em>ArUco ID</em>
 </p>
 
 <p align="center">
