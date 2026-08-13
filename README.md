@@ -9,6 +9,14 @@ Supervisors: M. Pierre Melchior & M. Matthieu Chevrié, EEL8-PROJ1 [BRA]
   <img src="assets/lab_setup.png" width="600" alt="Lab setup with xArm6 and board">
 </p>
 
+## Demo
+
+<p align="center">
+  <img src="assets/demo.gif" width="420" alt="The arm picking up a pawn and placing it on the board">
+</p>
+
+▶️ **[Watch the full demo (3 min)](https://www.youtube.com/watch?v=widBD34P_L8)**
+
 ---
 
 ## Overview
