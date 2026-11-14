@@ -21,7 +21,7 @@ Supervisors: M. Pierre Melchior & M. Matthieu Chevrié, EEL8-PROJ1 [BRA]
 
 ## Overview
 
-The robot reads the board in real time from ArUco markers, picks its move with Minimax and alpha-beta pruning, takes a pawn from its stock and places it on the target cell. Once the game has started, nobody needs to touch it.
+The robot reads the board in real time from ArUco markers, picks its move with Minimax and alpha-beta pruning, takes a pawn from its stock and places it on the target cell. Once the game has started, it runs without human intervention.
 
 We built it as a demonstration for the ENSEIRB-MATMECA open days. The program is about 2 700 lines of Python in a single file, which makes it easier for the next students to pick up and run.
 
@@ -130,7 +130,7 @@ The search stops at the first pass that finds the markers. The detection rate is
 5. Move above the target cell and center on its marker
 6. Release the pawn, go back up and record the move
 
-If the grip fails, the robot tries again up to three times, then gives up.
+If the grip fails, the robot retries up to three times before aborting the move.
 
 ### HUD
 
@@ -204,7 +204,7 @@ All geometric parameters are in `config_robot.json`, created by the first calibr
 
 ---
 
-## Problems we hit
+## Challenges and solutions
 
 | Problem | Solution |
 |---------|----------|
@@ -226,9 +226,9 @@ All geometric parameters are in `config_robot.json`, created by the first calibr
 
 ---
 
-## Ideas for the next team
+## Future work
 
-We are done with the project. Students who want to continue it could try:
+The project is complete on our side. Possible extensions for future students:
 
 - A board homography from the corner markers (IDs 0 to 3) with `cv2.findHomography`. It would remove the need to calibrate the SCAN position. The corner IDs are already reserved in the code for this.
 - Robot against robot: two `RobotController` instances playing in turn. The code allows it, but check first that the lab's other robot can be driven from Python.
@@ -254,15 +254,15 @@ xarm6-morpion/
 
 ---
 
-## Taking over the project
+## Notes for future students
 
-We handed the project over as is at the end of the 2025–2026 year. The full game loop works in normal lighting, and the robot was demonstrated several times. Points to know before starting:
+The project was handed over as is at the end of the 2025–2026 academic year. The full game loop works in normal lighting conditions and the robot was demonstrated several times. Before starting:
 
 - ArUco detection depends on the ambient light and on the marker angle. If the detection rate drops, adjust the gamma and CLAHE values in `config_robot.json`.
-- Measure `correction_mecanique_xy` again on your own setup; another team's calibration will not fit.
+- `correction_mecanique_xy` must be measured again on each physical setup; do not reuse another team's calibration.
 - Validating a human move takes 30 consecutive frames, which can feel slow. The threshold is set in `VisionSystem`.
 
-To get the xArm6 and the camera, ask the supervisors, M. Pierre Melchior and M. Matthieu Chevrié.
+For access to the xArm6 and the camera, contact the supervisors, M. Pierre Melchior and M. Matthieu Chevrié.
 
 ---
 
