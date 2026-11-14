@@ -15,21 +15,21 @@ Supervisors: M. Pierre Melchior & M. Matthieu Chevrié, EEL8-PROJ1 [BRA]
   <img src="assets/demo.gif" width="420" alt="The arm picking up a pawn and placing it on the board">
 </p>
 
-▶️ **[Watch the full demo (3 min)](https://www.youtube.com/watch?v=widBD34P_L8)**
+[Full demo video (3 min)](https://www.youtube.com/watch?v=widBD34P_L8)
 
 ---
 
 ## Overview
 
-The robot detects the board state in real time via ArUco markers, computes the best move with a Minimax alpha-beta algorithm, picks a pawn from its stock, and places it precisely on the target cell, entirely without human intervention once the game starts.
+The robot reads the board in real time from ArUco markers, picks its move with Minimax and alpha-beta pruning, takes a pawn from its stock and places it on the target cell. Once the game has started, nobody needs to touch it.
 
-Built as an attractive demonstration for ENSEIRB-MATMECA open days. ~2 700 lines of Python, single-file architecture (easier to hand-over and to compile for new users)
+We built it as a demonstration for the ENSEIRB-MATMECA open days. The program is about 2 700 lines of Python in a single file, which makes it easier for the next students to pick up and run.
 
-- **Vision**: Intel RealSense D435, ArUco markers (DICT_4X4_50), triple detection pipeline
-- **Game Algorithm**: 3 difficulty levels including unbeatable Minimax alpha-beta
-- **Control**: xArm Python SDK over Ethernet TCP/IP, eye-in-hand camera configuration
-- **HUD**: real-time OpenCV overlay showing board state, scores, status
-- **Simulation mode**: fully playable without hardware (mouse clicks replace physical pawns)
+- Vision: Intel RealSense D435, ArUco markers (DICT_4X4_50), three-pass detection
+- Game: three difficulty levels, the hardest being an unbeatable Minimax with alpha-beta pruning
+- Control: xArm Python SDK over Ethernet (TCP/IP), camera mounted on the wrist (eye-in-hand)
+- HUD: OpenCV overlay on the live feed with the board state, scores and status
+- Simulation mode: the game can be played without any hardware, with mouse clicks instead of pawns
 
 ---
 
@@ -58,13 +58,19 @@ Built as an attractive demonstration for ENSEIRB-MATMECA open days. ~2 700 lines
 | 30–39 | Human pawns (red, symbol X) |
 
 <p align="center">
-  <img src="assets/aruco_diagram.png" width="500" alt="ArUco addressing diagram">
-  <br><em>ArUco ID</em>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/aruco-diagram-dark.svg">
+    <img src="assets/aruco-diagram-light.svg" width="500" alt="ArUco addressing diagram">
+  </picture>
+  <br><em>Anatomy of an ArUco marker</em>
 </p>
 
 <p align="center">
-  <img src="assets/Board_layout.png" width="600" alt="Full ArUco board layout with pawn stocks">
-  <br><em>Complete layout: ArUco IDs, board corners, robot stock (blue, IDs 20–29) and human stock (red, IDs 30–39)</em>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/board-layout-dark.svg">
+    <img src="assets/board-layout-light.svg" width="600" alt="Board layout with ArUco IDs and pawn stocks">
+  </picture>
+  <br><em>Board layout: corners, cells, robot stock (blue) and human stock (red)</em>
 </p>
 
 <p align="center">
@@ -79,9 +85,9 @@ Built as an attractive demonstration for ENSEIRB-MATMECA open days. ~2 700 lines
 
 ---
 
-## Software Architecture
+## Software architecture
 
-The entire program runs as a single Python file (`morpion.py`), structured in 5 logical sections:
+Everything is in `morpion.py`, split into these sections:
 
 | Section | Class / Module | Role |
 |---------|---------------|------|
@@ -92,36 +98,39 @@ The entire program runs as a single Python file (`morpion.py`), structured in 5 
 | 4 | `VisionSystem` | Video acquisition + triple ArUco detection pipeline |
 | 5 | `main()` | Main game loop + calibration assistant |
 
-### Game Algorithm: 3 difficulty levels
+### Game algorithm: three difficulty levels
 
-- **EASY**: 70% random moves, opportunistic win if available
-- **MEDIUM**: heuristic rules (win > block > center > corner > random)
-- **HARD**: Minimax with alpha-beta pruning: unbeatable, strategic move ordering `[4,0,2,6,8,1,3,5,7]`
+- Easy: 70 % random moves, but it takes a win when one is available
+- Medium: fixed rules (win, then block, then center, then corner, then random)
+- Hard: Minimax with alpha-beta pruning, which never loses. Moves are evaluated in the order `[4,0,2,6,8,1,3,5,7]` (center, corners, edges) to prune more branches
 
-### Vision: triple detection pipeline
+### Vision: three-pass detection
 
-Each frame attempts ArUco detection in 3 successive passes:
+Each frame goes through up to three detection passes:
 1. Gamma correction + CLAHE (adaptive contrast)
 2. Raw color image
 3. Sharpness filter (reinforced Laplacian kernel) + grayscale
 
-Detection stops as soon as one pass succeeds. Achieves >99% detection rate even for dense markers (ArUco ID 0).
+The search stops at the first pass that finds the markers. The detection rate is above 99 %, including for dense markers such as ID 0.
 
 ### Robot move sequence
 
 <p align="center">
-  <img src="assets/flow_sequence.png" width="600" alt="Robot move sequence">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/flow-sequence-dark.svg">
+    <img src="assets/flow-sequence-light.svg" width="720" alt="Robot move sequence">
+  </picture>
   <br><em>Scan → Center → Pick → Transit → Place</em>
 </p>
 
-1. Compute best move via `meilleur_coup()`
-2. Move above stock, identify an available pawn
-3. Iterative fine-centering (camera centered on pawn marker)
-4. Descend to `z_game - 10 mm`, close gripper, verify grip
-5. Move above target cell, fine-center on cell ArUco
-6. Place pawn, rise, record move
+1. Compute the best move with `meilleur_coup()`
+2. Move above the stock and find an available pawn
+3. Center the camera on the pawn's marker, step by step
+4. Go down to `z_game - 10 mm`, close the gripper and check the grip
+5. Move above the target cell and center on its marker
+6. Release the pawn, go back up and record the move
 
-Up to 3 retries on grip failure before aborting.
+If the grip fails, the robot tries again up to three times, then gives up.
 
 ### HUD
 
@@ -131,7 +140,10 @@ Up to 3 retries on grip failure before aborting.
 </p>
 
 <p align="center">
-  <img src="assets/flow_tour.png" width="500" alt="Game turn flow">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/flow-tour-dark.svg">
+    <img src="assets/flow-tour-light.svg" width="420" alt="Game turn flow">
+  </picture>
 </p>
 
 ---
@@ -141,7 +153,7 @@ Up to 3 retries on grip failure before aborting.
 ### Requirements
 
 - Python ≥ 3.9
-- Linux or Windows PC (macOS: simulation mode only as `pyrealsense2` is not officially supported)
+- Linux or Windows PC (on macOS, only the simulation mode works, because `pyrealsense2` is not officially supported)
 - Packages: `opencv-python`, `numpy`, `pyrealsense2`, `xarm-python-sdk`
 
 ```bash
@@ -156,29 +168,29 @@ pip install xarm-python-sdk
 python3 morpion.py
 ```
 
-On first run (no `config_robot.json`), the calibration assistant launches automatically. Choose difficulty when prompted: `1` = Easy, `2` = Medium, `3` = Hard.
+On the first run (no `config_robot.json` yet), the calibration assistant starts by itself. Then pick the difficulty: `1` = Easy, `2` = Medium, `3` = Hard.
 
-**Simulation mode** activates automatically if `pyrealsense2` or the xArm SDK is unavailable. Board cells then become clickable.
+If `pyrealsense2` or the xArm SDK is missing, the program switches to simulation mode and the cells become clickable.
 
-### Calibration (first run only, ~2 minutes)
+### Calibration (first run only, about 2 minutes)
 
-The `wizard_calibration` function guides you through 3 steps:
+`wizard_calibration` walks you through three steps:
 
 1. Vision tuning (gamma, CLAHE)
 2. Record SCAN position (global board view) and STOCK position
-3. Automatic calibration: robot moves above ArUco corner 0, you lower the gripper to contact. The program derives board height Z and residual mechanical bias XY
+3. Automatic calibration: the robot moves above corner marker 0 and you lower the gripper until it touches the board. The program deduces the board height (Z) and the remaining mechanical offset in X and Y.
 
-Settings are saved to `config_robot.json` and persist across sessions.
+The settings are saved in `config_robot.json` and kept between sessions.
 
 ### Network setup
 
-The xArm6 IP is fixed at `192.168.1.208`. Set your PC's Ethernet interface to static IP on `192.168.1.0/24` (e.g. `192.168.1.100`).
+The xArm6 has the fixed IP `192.168.1.208`. Give your PC's Ethernet interface a static address on `192.168.1.0/24`, for example `192.168.1.100`.
 
 ---
 
 ## Configuration
 
-All geometric parameters live in `config_robot.json` (auto-generated on first calibration). Key fields:
+All geometric parameters are in `config_robot.json`, created by the first calibration. The main fields:
 
 | Field | Description |
 |-------|-------------|
@@ -188,11 +200,11 @@ All geometric parameters live in `config_robot.json` (auto-generated on first ca
 | `pos_stock` | Stock position where robot pawns are stored |
 | `z_jeu` | Board surface height in mm |
 
-> `config_robot.json` is excluded from git (`.gitignore`). Each physical setup requires its own calibration.
+> `config_robot.json` is in `.gitignore`: each physical setup needs its own calibration.
 
 ---
 
-## Challenges & Solutions
+## Problems we hit
 
 | Problem | Solution |
 |---------|----------|
@@ -214,18 +226,18 @@ All geometric parameters live in `config_robot.json` (auto-generated on first ca
 
 ---
 
-## Future Work
+## Ideas for the next team
 
-The project is done on our part, but for future students who wish to continue it:
+We are done with the project. Students who want to continue it could try:
 
-- **Board homography** using corner markers (IDs 0–3) via `cv2.findHomography`. It would eliminate SCAN position calibration
-- **Robot vs. robot**: two `RobotController` instances alternating. Architecture already supports it, but you would have to verifiy if the other available robot in the lab is python-compliant.
-- **Object classification** (MobileNet / YOLO) to replace ArUco markers.
-- **Force control**: collision detection and mass-based pawn sorting
+- A board homography from the corner markers (IDs 0 to 3) with `cv2.findHomography`. It would remove the need to calibrate the SCAN position. The corner IDs are already reserved in the code for this.
+- Robot against robot: two `RobotController` instances playing in turn. The code allows it, but check first that the lab's other robot can be driven from Python.
+- A neural classifier (MobileNet, YOLO) instead of the ArUco markers, which would be more robust to occlusion and lighting.
+- Force control: collision detection and sorting pawns by mass.
 
 ---
 
-## Repository Structure
+## Repository structure
 
 ```
 xarm6-morpion/
@@ -242,41 +254,21 @@ xarm6-morpion/
 
 ---
 
-## For Future Students
+## Taking over the project
 
-This project is handed off as-is at the end of the 2025–2026 academic year. The code is functional and the robot has been demonstrated successfully. Here is what you need to know to pick it up:
+We handed the project over as is at the end of the 2025–2026 year. The full game loop works in normal lighting, and the robot was demonstrated several times. Points to know before starting:
 
-**What works reliably**
-- Full game loop (scan → pick → place → win detection) in normal lighting conditions
-- Simulation mode on any laptop without hardware
-- Calibration wizard: takes ~2 minutes on first run, then persists across sessions
-- HARD mode is genuinely unbeatable (Minimax optimal)
+- ArUco detection depends on the ambient light and on the marker angle. If the detection rate drops, adjust the gamma and CLAHE values in `config_robot.json`.
+- Measure `correction_mecanique_xy` again on your own setup; another team's calibration will not fit.
+- Validating a human move takes 30 consecutive frames, which can feel slow. The threshold is set in `VisionSystem`.
 
-**What still needs work**
-- ArUco detection is sensitive to ambient light and marker angle: if detection rate drops, adjust gamma and CLAHE values in `config_robot.json`
-- The `correction_mecanique_xy` field must be re-measured on each physical setup; do not reuse another team's calibration
-- Human move validation (30-frame threshold) can feel sluggish, tunable in `VisionSystem`
-
-**Suggested next steps** (see [Future Work](#future-work) for detail)
-1. Board homography via corner markers (would eliminate the SCAN calibration step entirely)
-2. Replace ArUco with a neural classifier (MobileNet/YOLO), more robust to occlusion and lighting
-3. Robot vs. robot mode: the `RobotController` architecture already supports two instances
-
-**To get started**
-```bash
-python3 morpion.py          # launches calibration wizard on first run
-python3 morpion.py          # simulation mode if no hardware detected
-```
-
-Contact your supervisors (M. Pierre Melchior, M. Matthieu Chevrié) for access to the xArm6 and camera hardware.
+To get the xArm6 and the camera, ask the supervisors, M. Pierre Melchior and M. Matthieu Chevrié.
 
 ---
 
 ## Acknowledgements
 
-Thanks to **M. Pierre Melchior** and **M. Matthieu Chevrié** for their guidance throughout the project.  
-Thanks to the ENSEIRB-MATMECA and EIRLAB technical staff for access to the xArm6, 3D printer, and laser engraver.  
-Thanks to previous cohorts whose reports on the xArm6 and RealSense D435 provided the starting point for this work.
+Thanks to M. Pierre Melchior and M. Matthieu Chevrié for supervising the project, to the ENSEIRB-MATMECA and Eirlab technical staff for access to the xArm6, the 3D printer and the laser engraver, and to the previous teams whose reports on the xArm6 and the RealSense D435 gave us a starting point.
 
 ---
 

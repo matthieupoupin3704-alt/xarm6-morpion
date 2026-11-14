@@ -1,0 +1,31 @@
+\documentclass[tikz,border=8pt]{standalone}
+\input{style}
+\begin{document}
+\begin{tikzpicture}[x=10mm,y=10mm]
+  % plateau 3x3 : cases 10-18, lecture gauche -> droite, haut -> bas (MAPPING_CASES)
+  \draw[boxline, fill=boxfill, rounded corners=3pt, line width=0.8pt] (0,0) rectangle (6,6);
+  \foreach \i in {0,...,8}{
+    \pgfmathtruncatemacro{\c}{mod(\i,3)} \pgfmathtruncatemacro{\r}{\i/3} \pgfmathtruncatemacro{\id}{10+\i}
+    \draw[line, line width=0.4pt] (\c*2,6-\r*2) rectangle ++(2,-2);
+    \node[draw=fg, line width=0.6pt, minimum size=7mm, inner sep=0pt, font=\small] at (\c*2+1, 5-\r*2) {\id};
+  }
+  % coins 0-3
+  \foreach \p/\id in {(-0.8,6.8)/0, (6.8,6.8)/1, (-0.8,-0.8)/2, (6.8,-0.8)/3}
+    \node[draw=green, text=green, line width=0.8pt, minimum size=7mm, inner sep=0pt, font=\small] at \p {\id};
+  % stocks
+  \node[font=\small\bfseries, text=blue] at (-3.3,4.6) {Robot stock};
+  \node[lbl] at (-3.3,4.1) {IDs 20 to 29, symbol O};
+  \foreach \p in {(-4.3,3.1),(-3.3,3.1),(-2.3,3.1),(-3.8,2.1),(-2.8,2.1)}
+    \node[draw=blue, fill=blue!25!boxfill, line width=0.8pt, minimum size=7mm] at \p {};
+  \node[font=\small\bfseries, text=red] at (9.3,4.6) {Human stock};
+  \node[lbl] at (9.3,4.1) {IDs 30 to 39, symbol X};
+  \foreach \p in {(8.3,3.1),(9.3,3.1),(10.3,3.1),(8.8,2.1),(9.8,2.1)}
+    \node[draw=red, fill=red!25!boxfill, line width=0.8pt, minimum size=7mm] at \p {};
+  % légende
+  \begin{scope}[shift={(-1.2,-2.2)}]
+    \node[draw=green, minimum size=4mm, inner sep=0pt] at (0,0) {}; \node[lbl, anchor=west] at (0.3,0) {Board corners (0 to 3)};
+    \node[draw=fg, minimum size=4mm, inner sep=0pt] at (4.2,0) {}; \node[lbl, anchor=west] at (4.5,0) {Cells (10 to 18)};
+    \node[lbl, anchor=west] at (7.5,0) {not to scale};
+  \end{scope}
+\end{tikzpicture}
+\end{document}

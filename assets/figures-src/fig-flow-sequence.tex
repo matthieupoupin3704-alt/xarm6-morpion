@@ -1,0 +1,13 @@
+\documentclass[tikz,border=8pt]{standalone}
+\input{style}
+\begin{document}
+\begin{tikzpicture}[node distance=9mm]
+  \node[block, minimum width=27mm] (s1) {\textbf{1. Scan}\\[1pt]\textcolor{muted}{\scriptsize patrol over the stock}};
+  \node[block, minimum width=27mm, right=of s1] (s2) {\textbf{2. Center}\\[1pt]\textcolor{muted}{\scriptsize fine centering on ArUco}};
+  \node[block, minimum width=27mm, right=of s2] (s3) {\textbf{3. Pick}\\[1pt]\textcolor{muted}{\scriptsize close gripper, check grip}};
+  \node[block, minimum width=27mm, right=of s3] (s4) {\textbf{4. Transit}\\[1pt]\textcolor{muted}{\scriptsize safe height}};
+  \node[block, minimum width=27mm, right=of s4] (s5) {\textbf{5. Place}\\[1pt]\textcolor{muted}{\scriptsize center on cell, release}};
+  \foreach \a/\b in {s1/s2,s2/s3,s3/s4,s4/s5} \draw[wire, blue] (\a) -- (\b);
+  \draw[wire, orange, dashed] (s3.south) -- ++(0,-6mm) -| node[below, lbl, pos=0.25]{grip failed: retry (max 3)} (s1.south);
+\end{tikzpicture}
+\end{document}

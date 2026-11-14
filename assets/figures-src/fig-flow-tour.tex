@@ -1,0 +1,17 @@
+\documentclass[tikz,border=8pt]{standalone}
+\input{style}
+\begin{document}
+\begin{tikzpicture}[node distance=6mm]
+  \tikzset{stage/.style={block, minimum width=62mm, minimum height=9.5mm}}
+  \node[stage] (a) {Capture camera frame};
+  \node[stage, below=of a] (b) {ArUco detection};
+  \node[stage, below=of b] (c) {Read board state};
+  \node[stage, below=of c] (d) {Minimax $\rightarrow$ best cell};
+  \node[stage, below=of d] (e) {Pick and place sequence};
+  \node[stage, below=of e] (f) {Check board: win, draw or next turn};
+  \foreach \x/\y in {a/b,b/c,c/d,d/e,e/f} \draw[wire, blue] (\x) -- (\y);
+  \foreach \n/\t in {a/30 fps, b/triple pipeline, d/instant, e/8 to 12 s}
+    \node[lbl, anchor=west] at ([xshift=3mm]\n.east) {\t};
+  \draw[wire, orange, dashed] (f.west) -- ++(-7mm,0) |- node[lbl, left, pos=0.25]{next turn} (a.west);
+\end{tikzpicture}
+\end{document}
